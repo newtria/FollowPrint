@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "title": "Followprint — Your Social Fingerprint",
+    "description": "Analyze your Instagram data privately. See pending requests, non-mutual followers, and more."
+  },
+  "hero": {
+    "title": "Your Social Fingerprint",
+    "subtitle": "See who ignored your follow request, who's not following you back, and more — 100% private, nothing leaves your browser.",
+    "cta": "Start Analyzing"
+  },
+  "guide": {
+    "title": "How to Get Your Data",
+    "subtitle": "It takes 2 minutes to request. Instagram sends it within a few hours.",
+    "openInstagram": "Open Instagram Settings",
+    "step1": {
+      "title": "Open Instagram Settings",
+      "desc": "Go to your profile, tap the menu (three lines), then tap Settings and Privacy."
+    },
+    "step2": {
+      "title": "Go to Accounts Center",
+      "desc": "Tap Accounts Center at the top, then Your information and permissions."
+    },
+    "step3": {
+      "title": "Download Your Information",
+      "desc": "Tap Download your information, then Request a download."
+    },
+    "step4": {
+      "title": "Select Data & Format",
+      "desc": "Choose your account, select Some of your information, check Followers and Following. Any format (JSON or HTML) works."
+    },
+    "step5": {
+      "title": "Submit & Wait",
+      "desc": "Tap Create files. Instagram will notify you when it's ready (usually within minutes to a few hours)."
+    },
+    "step6": {
+      "title": "Download & Upload Here",
+      "desc": "Download the ZIP file from Instagram's notification, then drag it into the upload area below."
+    }
+  },
+  "upload": {
+    "title": "Upload Your Data",
+    "dragDrop": "Drag & drop your Instagram ZIP file here",
+    "or": "or",
+    "browse": "Choose File",
+    "hint": "Your data stays in your browser. Nothing is uploaded to any server.",
+    "processing": "Analyzing...",
+    "error": {
+      "INVALID_ZIP": "This doesn't look like an Instagram data export. Make sure you downloaded the ZIP from Instagram.",
+      "UNSUPPORTED_FORMAT": "Please upload a .zip file from Instagram's data export.",
+      "default": "Something went wrong. Please try again with a valid Instagram data export."
+    }
+  },
+  "character": {
+    "title": "Your Character Analysis",
+    "types": {
+      "influencer": {
+        "name": "The Influencer",
+        "desc": "You have a strong presence. People follow you more than you follow others."
+      },
+      "butterfly": {
+        "name": "Social Butterfly",
+        "desc": "You're a connector. High mutuality shows you build real relationships."
+      },
+      "observer": {
+        "name": "The Observer",
+        "desc": "You follow many but stay in the background. A silent explorer of content."
+      },
+      "selective": {
+        "name": "The Selective",
+        "desc": "Quality over quantity. You carefully curate who you follow."
+      },
+      "explorer": {
+        "name": "The Explorer",
+        "desc": "Always discovering new accounts. You're not afraid to send that follow request."
+      },
+      "minimalist": {
+        "name": "The Minimalist",
+        "desc": "Less is more. Your Instagram circle is small but meaningful."
+      }
+    },
+    "scores": {
+      "social": "Social",
+      "loyalty": "Loyalty",
+      "curiosity": "Curiosity",
+      "selectivity": "Selectivity"
+    },
+    "share": "Share",
+    "shared": "Copied!",
+    "activeTime": "Most Active",
+    "newFollows": "New Follows",
+    "perMonth": "mo",
+    "highlights": {
+      "pendingCount": "Active requester",
+      "highMutual": "High mutuality",
+      "lowMutual": "One-sided connections",
+      "moreFans": "More fans than crushes",
+      "moreNonMutual": "Following > Followers",
+      "closeFriends": "Inner circle keeper",
+      "activeUnfollower": "Regular cleaner"
+    }
+  },
+  "insights": {
+    "title": "Activity Insights",
+    "topLiked": "Most Liked Accounts",
+    "topSaved": "Most Saved From",
+    "profileSearches": "Profile Searches",
+    "wordSearches": "Search History",
+    "activityHours": "Activity by Hour",
+    "dms": "DM Conversations"
+  },
+  "dashboard": {
+    "title": "Your Followprint",
+    "reset": "Analyze New File",
+    "overview": {
+      "followers": "Followers",
+      "following": "Following",
+      "ratio": "Ratio",
+      "mutuality": "Mutuality"
+    },
+    "tabs": {
+      "pending": "Pending Requests",
+      "nonMutual": "Not Following Back",
+      "fansOnly": "Fans Only",
+      "mutual": "Mutual",
+      "unfollowed": "Recently Unfollowed",
+      "closeFriends": "Close Friends",
+      "blocked": "Blocked",
+      "restricted": "Restricted"
+    },
+    "search": "Search username...",
+    "sortName": "Name",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "viewProfile": "View",
+    "noData": "No accounts in this category",
+    "total": "total",
+    "requestedOn": "Requested",
+    "followedOn": "Followed",
+    "copyAll": "Copy All",
+    "copied": "Copied!"
+  },
+  "footer": {
+    "privacy": "100% client-side. Your data never leaves your browser.",
+    "github": "GitHub"
+  }
+}

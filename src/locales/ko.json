@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "title": "Followprint — 소셜 지문 분석",
+    "description": "인스타그램 데이터를 안전하게 분석하세요. 보낸 팔로우 신청, 맞팔 안 한 사람 등을 확인할 수 있습니다."
+  },
+  "hero": {
+    "title": "당신의 소셜 지문",
+    "subtitle": "보낸 팔로우 신청을 무시한 사람, 맞팔 안 한 사람 등을 한눈에 — 100% 브라우저에서만 처리, 서버 전송 없음.",
+    "cta": "분석 시작하기"
+  },
+  "guide": {
+    "title": "데이터 다운로드 방법",
+    "subtitle": "요청은 2분이면 끝나고, 인스타그램이 보통 몇 시간 안에 보내줍니다.",
+    "openInstagram": "인스타그램 설정 열기",
+    "step1": {
+      "title": "인스타그램 설정 열기",
+      "desc": "프로필에서 메뉴(삼선)를 누르고, 설정 및 개인정보를 선택하세요."
+    },
+    "step2": {
+      "title": "계정 센터 이동",
+      "desc": "상단의 계정 센터를 누르고, 내 정보 및 권한을 선택하세요."
+    },
+    "step3": {
+      "title": "내 정보 다운로드",
+      "desc": "내 정보 다운로드를 누르고, 다운로드 요청을 선택하세요."
+    },
+    "step4": {
+      "title": "데이터 및 형식 선택",
+      "desc": "계정을 선택하고, 일부 정보를 선택한 뒤, 팔로워 및 팔로잉을 체크하세요. 형식은 JSON이든 HTML이든 상관없습니다."
+    },
+    "step5": {
+      "title": "요청 제출 및 대기",
+      "desc": "파일 만들기를 누르세요. 보통 몇 분에서 몇 시간 안에 알림이 옵니다."
+    },
+    "step6": {
+      "title": "다운로드 후 여기에 업로드",
+      "desc": "인스타그램 알림에서 ZIP 파일을 다운로드한 뒤, 아래 업로드 영역에 드래그하세요."
+    }
+  },
+  "upload": {
+    "title": "데이터 업로드",
+    "dragDrop": "인스타그램 ZIP 파일을 여기에 드래그하세요",
+    "or": "또는",
+    "browse": "파일 선택",
+    "hint": "데이터는 브라우저에서만 처리됩니다. 서버로 전송되지 않습니다.",
+    "processing": "분석 중...",
+    "error": {
+      "INVALID_ZIP": "인스타그램 데이터 내보내기 파일이 아닌 것 같습니다. 인스타그램에서 다운로드한 ZIP 파일인지 확인해주세요.",
+      "UNSUPPORTED_FORMAT": "인스타그램 데이터 내보내기에서 받은 .zip 파일을 올려주세요.",
+      "default": "문제가 발생했습니다. 유효한 인스타그램 데이터 파일로 다시 시도해주세요."
+    }
+  },
+  "character": {
+    "title": "캐릭터 분석",
+    "types": {
+      "influencer": {
+        "name": "인플루언서",
+        "desc": "강한 존재감. 팔로워가 팔로잉보다 훨씬 많습니다."
+      },
+      "butterfly": {
+        "name": "소셜 나비",
+        "desc": "연결의 달인. 높은 맞팔률이 진짜 관계를 만드는 증거입니다."
+      },
+      "observer": {
+        "name": "관찰자",
+        "desc": "많이 팔로우하지만 조용히 지켜봅니다. 콘텐츠의 탐험가."
+      },
+      "selective": {
+        "name": "선택적 귀족",
+        "desc": "양보다 질. 팔로우할 사람을 신중하게 고릅니다."
+      },
+      "explorer": {
+        "name": "탐험가",
+        "desc": "항상 새로운 계정을 발견합니다. 팔로우 신청을 주저하지 않는 타입."
+      },
+      "minimalist": {
+        "name": "미니멀리스트",
+        "desc": "적을수록 좋다. 작지만 의미 있는 인스타 세계."
+      }
+    },
+    "scores": {
+      "social": "소셜 지수",
+      "loyalty": "충성도",
+      "curiosity": "호기심",
+      "selectivity": "선별력"
+    },
+    "share": "공유",
+    "shared": "복사됨!",
+    "activeTime": "주 활동 시간",
+    "newFollows": "새 팔로우",
+    "perMonth": "월",
+    "highlights": {
+      "pendingCount": "적극적 신청러",
+      "highMutual": "높은 맞팔률",
+      "lowMutual": "일방적 관계 많음",
+      "moreFans": "팬이 더 많음",
+      "moreNonMutual": "짝사랑 많음",
+      "closeFriends": "친한 친구 관리자",
+      "activeUnfollower": "정기적 정리러"
+    }
+  },
+  "insights": {
+    "title": "활동 인사이트",
+    "topLiked": "좋아요 많이 누른 계정",
+    "topSaved": "저장 많이 한 계정",
+    "profileSearches": "프로필 검색 기록",
+    "wordSearches": "검색어 기록",
+    "activityHours": "시간대별 활동",
+    "dms": "DM 대화"
+  },
+  "dashboard": {
+    "title": "분석 결과",
+    "reset": "새 파일 분석",
+    "overview": {
+      "followers": "팔로워",
+      "following": "팔로잉",
+      "ratio": "비율",
+      "mutuality": "맞팔률"
+    },
+    "tabs": {
+      "pending": "보낸 팔로우 신청",
+      "nonMutual": "맞팔 안 한 사람",
+      "fansOnly": "나만 팔로우하는 사람",
+      "mutual": "맞팔",
+      "unfollowed": "최근 언팔",
+      "closeFriends": "친한 친구",
+      "blocked": "차단",
+      "restricted": "제한"
+    },
+    "search": "유저네임 검색...",
+    "sortName": "이름순",
+    "sortNewest": "최신순",
+    "sortOldest": "오래된순",
+    "viewProfile": "보기",
+    "noData": "이 카테고리에 계정이 없습니다",
+    "total": "명",
+    "requestedOn": "신청일",
+    "followedOn": "팔로우",
+    "copyAll": "전체 복사",
+    "copied": "복사됨!"
+  },
+  "footer": {
+    "privacy": "100% 클라이언트 처리. 데이터가 브라우저를 떠나지 않습니다.",
+    "github": "GitHub"
+  }
+}
