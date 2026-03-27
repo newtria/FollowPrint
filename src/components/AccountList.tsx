@@ -14,6 +14,17 @@ type SortMode = "name" | "newest" | "oldest";
 
 const PAGE_SIZE = 50;
 
+function escapeCsvCell(value: string): string {
+  // Escape double quotes by doubling them
+  let escaped = value.replace(/"/g, '""');
+  // Prefix formula characters with a single quote to prevent CSV injection
+  if (/^[=+\-@\t\r]/.test(escaped)) {
+    escaped = "'" + escaped;
+  }
+  // Wrap in double quotes
+  return `"${escaped}"`;
+}
+
 function downloadCsv(accounts: InstagramAccount[], filename: string) {
   const header = "username,profile_url,timestamp,date\n";
   const rows = accounts
@@ -21,7 +32,7 @@ function downloadCsv(accounts: InstagramAccount[], filename: string) {
       const date = a.timestamp
         ? new Date(a.timestamp * 1000).toISOString()
         : "";
-      return `${a.username},${a.profileUrl},${a.timestamp},${date}`;
+      return `${escapeCsvCell(a.username)},${escapeCsvCell(a.profileUrl)},${escapeCsvCell(String(a.timestamp))},${escapeCsvCell(date)}`;
     })
     .join("\n");
   const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });

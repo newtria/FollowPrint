@@ -1,46 +1,12 @@
 import JSZip from "jszip";
 import type { InstagramAccount, AnalysisResult, FullData } from "./types";
 import { parseInsights } from "./insights-parser";
-
-// ── Date parsing ──
-
-function parseInstagramDate(str: string): number {
-  if (!str) return 0;
-
-  // Korean: "3월 16, 2026 6:41 오후"
-  const ko = str.match(
-    /(\d{1,2})월\s+(\d{1,2}),\s+(\d{4})\s+(\d{1,2}):(\d{2})\s+(오전|오후)/
-  );
-  if (ko) {
-    const [, month, day, year, hour, minute, ampm] = ko;
-    let h = parseInt(hour);
-    if (ampm === "오후" && h !== 12) h += 12;
-    if (ampm === "오전" && h === 12) h = 0;
-    return Math.floor(
-      new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day),
-        h,
-        parseInt(minute)
-      ).getTime() / 1000
-    );
-  }
-
-  // English: "Dec 18, 2025 5:23 AM"
-  const date = new Date(str);
-  if (!isNaN(date.getTime())) {
-    return Math.floor(date.getTime() / 1000);
-  }
-
-  return 0;
-}
+import { parseInstagramDate, safeParseDom } from "./parse-utils";
 
 // ── HTML parsing ──
 
 function parseHtmlAccounts(html: string): InstagramAccount[] {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const doc = safeParseDom(html);
   const accounts: InstagramAccount[] = [];
 
   const links = doc.querySelectorAll('a[href*="instagram.com"]');

@@ -1,57 +1,27 @@
 import JSZip from "jszip";
 import type { InsightsData, RankedItem, TimestampedItem } from "./types";
-
-function parseInstagramDate(str: string): number {
-  if (!str) return 0;
-  const ko = str.match(
-    /(\d{1,2})월\s+(\d{1,2}),\s+(\d{4})\s+(\d{1,2}):(\d{2})\s+(오전|오후)/
-  );
-  if (ko) {
-    const [, month, day, year, hour, minute, ampm] = ko;
-    let h = parseInt(hour);
-    if (ampm === "오후" && h !== 12) h += 12;
-    if (ampm === "오전" && h === 12) h = 0;
-    return Math.floor(
-      new Date(parseInt(year), parseInt(month) - 1, parseInt(day), h, parseInt(minute)).getTime() / 1000
-    );
-  }
-  const date = new Date(str);
-  return isNaN(date.getTime()) ? 0 : Math.floor(date.getTime() / 1000);
-}
+import { parseInstagramDate, safeParseDom } from "./parse-utils";
 
 // ── Liked Posts: extract owner usernames ──
 
 function parseLikedPosts(html: string): string[] {
+  // Regex is applied to outerHTML after DOMPurify sanitization in safeParseDom,
+  // so the content is already sanitized against XSS before pattern matching.
+  const sanitized = safeParseDom(html);
   const usernames: string[] = [];
-  // Match username cells after "사용자 이름" or "Username" label
   const regex =
     /(?:사용자 이름|Username)<\/td><td class="_2piu _a6_r">([^<]+)<\/td>/g;
   let m;
-  while ((m = regex.exec(html)) !== null) {
+  while ((m = regex.exec(sanitized.documentElement.outerHTML)) !== null) {
     usernames.push(m[1].trim());
   }
   return usernames;
 }
 
-// ── Liked Comments: extract usernames from h2 ──
+// ── Extract usernames from h2 elements (used by liked comments & saved posts) ──
 
-function parseLikedComments(html: string): string[] {
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const usernames: string[] = [];
-  const h2s = doc.querySelectorAll("h2");
-  for (const h2 of h2s) {
-    const name = h2.textContent?.trim();
-    if (name && !name.includes(" ") && name.length < 50) {
-      usernames.push(name);
-    }
-  }
-  return usernames;
-}
-
-// ── Saved Posts: extract usernames from h2 ──
-
-function parseSavedPosts(html: string): string[] {
-  const doc = new DOMParser().parseFromString(html, "text/html");
+function parseH2Usernames(html: string): string[] {
+  const doc = safeParseDom(html);
   const usernames: string[] = [];
   const h2s = doc.querySelectorAll("h2");
   for (const h2 of h2s) {
@@ -66,7 +36,7 @@ function parseSavedPosts(html: string): string[] {
 // ── Profile Searches ──
 
 function parseProfileSearches(html: string): TimestampedItem[] {
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = safeParseDom(html);
   const results: TimestampedItem[] = [];
   const h2s = doc.querySelectorAll("h2");
 
@@ -96,7 +66,7 @@ function parseProfileSearches(html: string): TimestampedItem[] {
 // ── Word Searches ──
 
 function parseWordSearches(html: string): TimestampedItem[] {
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = safeParseDom(html);
   const results: TimestampedItem[] = [];
 
   const tables = doc.querySelectorAll("table");
@@ -108,7 +78,6 @@ function parseWordSearches(html: string): TimestampedItem[] {
     for (const cell of cells) {
       const text = cell.textContent?.trim() || "";
       if (text.startsWith("검색") || text.startsWith("Search")) {
-        // The search term is in nested divs
         const innerDiv = cell.querySelector("div > div");
         query = innerDiv?.textContent?.trim() || "";
       }
@@ -129,9 +98,8 @@ function parseWordSearches(html: string): TimestampedItem[] {
 
 function parseLoginActivity(html: string): number[] {
   const hours = new Array(24).fill(0);
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = safeParseDom(html);
 
-  // Timestamps are in h2 elements as ISO format
   const h2s = doc.querySelectorAll("h2");
   for (const h2 of h2s) {
     const text = h2.textContent?.trim() || "";
@@ -142,7 +110,6 @@ function parseLoginActivity(html: string): number[] {
     }
   }
 
-  // Also try date cells
   const dateCells = doc.querySelectorAll("td._2piu._a6_r");
   for (const cell of dateCells) {
     const text = cell.textContent?.trim() || "";
@@ -161,7 +128,7 @@ function parseLoginActivity(html: string): number[] {
 // ── Chat names ──
 
 function parseChatList(html: string): string[] {
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = safeParseDom(html);
   const names: string[] = [];
   const links = doc.querySelectorAll("h2 a");
   for (const link of links) {
@@ -227,11 +194,11 @@ export async function parseInsights(zip: JSZip): Promise<InsightsData> {
 
   const likedUsernames = [
     ...(likedPostsHtml ? parseLikedPosts(likedPostsHtml) : []),
-    ...(likedCommentsHtml ? parseLikedComments(likedCommentsHtml) : []),
+    ...(likedCommentsHtml ? parseH2Usernames(likedCommentsHtml) : []),
   ];
 
   const savedUsernames = savedPostsHtml
-    ? parseSavedPosts(savedPostsHtml)
+    ? parseH2Usernames(savedPostsHtml)
     : [];
 
   return {
