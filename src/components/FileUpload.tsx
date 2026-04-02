@@ -5,6 +5,8 @@ import { useI18n } from "@/lib/i18n";
 import { parseFileFull } from "@/lib/parser";
 import type { FullData } from "@/lib/types";
 
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
+
 interface Props {
   onResult: (result: FullData) => void;
 }
@@ -19,6 +21,12 @@ export default function FileUpload({ onResult }: Props) {
   const handleFile = useCallback(
     async (file: File) => {
       setError(null);
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError(t("upload.error.FILE_TOO_LARGE"));
+        return;
+      }
+
       setProcessing(true);
       try {
         const result = await parseFileFull(file);

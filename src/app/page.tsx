@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { I18nProvider, useI18n } from "@/lib/i18n";
 import type { FullData } from "@/lib/types";
 import Guide from "@/components/Guide";
 import FileUpload from "@/components/FileUpload";
 import Dashboard from "@/components/Dashboard";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function ThemeToggle() {
-  const [theme, setTheme] = useState("dark");
-
-  useEffect(() => {
-    setTheme(document.documentElement.getAttribute("data-theme") || "dark");
-  }, []);
+  const [theme, setTheme] = useState(() =>
+    typeof document !== "undefined"
+      ? document.documentElement.getAttribute("data-theme") || "dark"
+      : "dark"
+  );
 
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";
@@ -138,19 +139,21 @@ function AppContent() {
       <BackgroundOrbs />
       <Header />
       <main className="relative z-10 max-w-5xl mx-auto px-6 pb-12">
-        {!result ? (
-          <>
-            <Hero />
-            <Guide />
-            <FileUpload onResult={setResult} />
-          </>
-        ) : (
-          <Dashboard
-            data={result.analysis}
-            insights={result.insights}
-            onReset={() => setResult(null)}
-          />
-        )}
+        <ErrorBoundary>
+          {!result ? (
+            <>
+              <Hero />
+              <Guide />
+              <FileUpload onResult={setResult} />
+            </>
+          ) : (
+            <Dashboard
+              data={result.analysis}
+              insights={result.insights}
+              onReset={() => setResult(null)}
+            />
+          )}
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>

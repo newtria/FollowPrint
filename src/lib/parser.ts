@@ -103,107 +103,74 @@ async function findAccounts(
   return accounts;
 }
 
+// ── Shared analysis helper ──
+
+async function analyzeZip(zip: JSZip): Promise<AnalysisResult> {
+  const [
+    followers,
+    following,
+    pending,
+    unfollowed,
+    closeFriends,
+    blocked,
+    restricted,
+  ] = await Promise.all([
+    findAccounts(zip, "followers"),
+    findAccounts(zip, "following"),
+    findAccounts(zip, "pending_follow"),
+    findAccounts(zip, "unfollowed"),
+    findAccounts(zip, "close_friends"),
+    findAccounts(zip, "blocked"),
+    findAccounts(zip, "restricted"),
+  ]);
+
+  const followerSet = new Set(followers.map((a) => a.username));
+  const followingSet = new Set(following.map((a) => a.username));
+
+  return {
+    followers,
+    following,
+    pendingRequests: pending,
+    recentlyUnfollowed: unfollowed,
+    closeFriends,
+    blockedAccounts: blocked,
+    restrictedAccounts: restricted,
+    nonMutual: following.filter((a) => !followerSet.has(a.username)),
+    fansOnly: followers.filter((a) => !followingSet.has(a.username)),
+    mutual: following.filter((a) => followerSet.has(a.username)),
+  };
+}
+
+// ── Validate ZIP contains Instagram data ──
+
+function validateInstagramZip(zip: JSZip): void {
+  const paths = Object.keys(zip.files);
+  const isInstagram = paths.some(
+    (p) => p.includes("followers") || p.includes("following")
+  );
+  if (!isInstagram) throw new Error("INVALID_ZIP");
+}
+
 // ── Main entry ──
 
 export async function parseInstagramZip(
   file: File
 ): Promise<AnalysisResult> {
   const zip = await JSZip.loadAsync(file);
-
-  const paths = Object.keys(zip.files);
-  const isInstagram = paths.some(
-    (p) => p.includes("followers") || p.includes("following")
-  );
-  if (!isInstagram) throw new Error("INVALID_ZIP");
-
-  const [
-    followers,
-    following,
-    pending,
-    unfollowed,
-    closeFriends,
-    blocked,
-    restricted,
-  ] = await Promise.all([
-    findAccounts(zip, "followers"),
-    findAccounts(zip, "following"),
-    findAccounts(zip, "pending_follow"),
-    findAccounts(zip, "unfollowed"),
-    findAccounts(zip, "close_friends"),
-    findAccounts(zip, "blocked"),
-    findAccounts(zip, "restricted"),
-  ]);
-
-  const followerSet = new Set(followers.map((a) => a.username));
-  const followingSet = new Set(following.map((a) => a.username));
-
-  return {
-    followers,
-    following,
-    pendingRequests: pending,
-    recentlyUnfollowed: unfollowed,
-    closeFriends,
-    blockedAccounts: blocked,
-    restrictedAccounts: restricted,
-    nonMutual: following.filter((a) => !followerSet.has(a.username)),
-    fansOnly: followers.filter((a) => !followingSet.has(a.username)),
-    mutual: following.filter((a) => followerSet.has(a.username)),
-  };
+  validateInstagramZip(zip);
+  return analyzeZip(zip);
 }
 
 export async function parseFileFull(file: File): Promise<FullData> {
   if (!file.name.endsWith(".zip")) throw new Error("UNSUPPORTED_FORMAT");
 
   const zip = await JSZip.loadAsync(file);
-
-  const paths = Object.keys(zip.files);
-  const isInstagram = paths.some(
-    (p) => p.includes("followers") || p.includes("following")
-  );
-  if (!isInstagram) throw new Error("INVALID_ZIP");
+  validateInstagramZip(zip);
 
   const [analysis, insights] = await Promise.all([
-    parseInstagramZipFromLoaded(zip),
+    analyzeZip(zip),
     parseInsights(zip),
   ]);
 
   return { analysis, insights };
-}
-
-async function parseInstagramZipFromLoaded(
-  zip: JSZip
-): Promise<AnalysisResult> {
-  const [
-    followers,
-    following,
-    pending,
-    unfollowed,
-    closeFriends,
-    blocked,
-    restricted,
-  ] = await Promise.all([
-    findAccounts(zip, "followers"),
-    findAccounts(zip, "following"),
-    findAccounts(zip, "pending_follow"),
-    findAccounts(zip, "unfollowed"),
-    findAccounts(zip, "close_friends"),
-    findAccounts(zip, "blocked"),
-    findAccounts(zip, "restricted"),
-  ]);
-
-  const followerSet = new Set(followers.map((a) => a.username));
-  const followingSet = new Set(following.map((a) => a.username));
-
-  return {
-    followers,
-    following,
-    pendingRequests: pending,
-    recentlyUnfollowed: unfollowed,
-    closeFriends,
-    blockedAccounts: blocked,
-    restrictedAccounts: restricted,
-    nonMutual: following.filter((a) => !followerSet.has(a.username)),
-    fansOnly: followers.filter((a) => !followingSet.has(a.username)),
-    mutual: following.filter((a) => followerSet.has(a.username)),
-  };
 }

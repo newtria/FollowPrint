@@ -202,7 +202,7 @@ export default function StoryCard({
     // Highlights
     if (result.highlights.length > 0) {
       const hlY = 1380;
-      let hlX = W / 2;
+      const hlX = W / 2;
       ctx.textAlign = "center";
       const tags = result.highlights.slice(0, 4).map((k) => t(k));
       ctx.fillStyle = "rgba(255,255,255,0.4)";
