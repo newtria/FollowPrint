@@ -151,6 +151,18 @@ function validateInstagramZip(zip: JSZip): void {
   if (!isInstagram) throw new Error("INVALID_ZIP");
 }
 
+function isAnalysisEmpty(a: AnalysisResult): boolean {
+  return (
+    a.followers.length === 0 &&
+    a.following.length === 0 &&
+    a.pendingRequests.length === 0 &&
+    a.recentlyUnfollowed.length === 0 &&
+    a.closeFriends.length === 0 &&
+    a.blockedAccounts.length === 0 &&
+    a.restrictedAccounts.length === 0
+  );
+}
+
 // ── Main entry ──
 
 export async function parseInstagramZip(
@@ -158,7 +170,11 @@ export async function parseInstagramZip(
 ): Promise<AnalysisResult> {
   const zip = await JSZip.loadAsync(file);
   validateInstagramZip(zip);
-  return analyzeZip(zip);
+  const analysis = await analyzeZip(zip);
+  if (isAnalysisEmpty(analysis)) {
+    throw new Error("EMPTY_DATA");
+  }
+  return analysis;
 }
 
 export async function parseFileFull(file: File): Promise<FullData> {
@@ -171,6 +187,15 @@ export async function parseFileFull(file: File): Promise<FullData> {
     analyzeZip(zip),
     parseInsights(zip),
   ]);
+
+  // The validate step only checks that *some* path mentions followers /
+  // following — that catches "you uploaded the wrong zip" — but it can still
+  // produce 0 records if Instagram changed their export schema. Surface that
+  // as a distinct error so the UI can tell the user "this looks like an IG
+  // export but the format may have changed" instead of an empty dashboard.
+  if (isAnalysisEmpty(analysis)) {
+    throw new Error("EMPTY_DATA");
+  }
 
   return { analysis, insights };
 }
