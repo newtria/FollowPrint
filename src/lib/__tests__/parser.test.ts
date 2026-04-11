@@ -126,17 +126,16 @@ describe("parseInstagramZip", () => {
     await expect(parseInstagramZip(file)).rejects.toThrow("INVALID_ZIP");
   });
 
-  it("handles empty followers_and_following directory", async () => {
+  it("rejects an Instagram-shaped zip with no actual records as EMPTY_DATA", async () => {
+    // Validation passes (path contains "followers") but no parseable data
+    // exists. The parser surfaces this as EMPTY_DATA so the UI can tell the
+    // user "this looks like an IG export but the format may have changed",
+    // which is more actionable than rendering an empty dashboard.
     const zip = new JSZip();
-    // Directory marker exists but no actual data files inside
     zip.file("followers_and_following/readme.txt", "empty export");
 
     const file = await zipToFile(zip);
-    const result = await parseInstagramZip(file);
-
-    expect(result.followers).toHaveLength(0);
-    expect(result.following).toHaveLength(0);
-    expect(result.mutual).toHaveLength(0);
+    await expect(parseInstagramZip(file)).rejects.toThrow("EMPTY_DATA");
   });
 
   it("parses pending, unfollowed, closeFriends, blocked, restricted", async () => {

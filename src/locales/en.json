@@ -48,6 +48,7 @@
       "INVALID_ZIP": "This doesn't look like an Instagram data export. Make sure you downloaded the ZIP from Instagram.",
       "UNSUPPORTED_FORMAT": "Please upload a .zip file from Instagram's data export.",
       "FILE_TOO_LARGE": "File is too large. Maximum allowed size is 500 MB.",
+      "EMPTY_DATA": "We could read the ZIP, but it didn't contain any followers or following data. Instagram may have changed their export format — please request a fresh export, and if the problem persists, open an issue on GitHub.",
       "default": "Something went wrong. Please try again with a valid Instagram data export."
     }
   },
